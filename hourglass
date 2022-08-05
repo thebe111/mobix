@@ -1,0 +1,136 @@
+#!/usr/bin/env node
+
+/*
+ *
+ * Requirements:
+ *
+ * - NodeJS >= v14.19.3
+ *
+ * How To Run:
+ *
+ * ./hourglass [hourglass-size]
+ *
+ * by @thebe111
+ *
+ */
+
+const SIZE = process.argv[2];
+
+if (SIZE < 20) throw new Error("Invalid input");
+
+const chars = {
+    empty: ' ',
+    sand: '*',
+    point: '+',
+    limit: '/',
+    reverseLimit: '\\',
+    verticalBar: '|',
+    horizontalBar: '=',
+};
+
+const hourglass = [];
+
+((matrix) => {
+    for (let line = 0; line < SIZE; line++) {
+        matrix[line] = [];
+
+        for (let col = 0; col < SIZE; col++) {
+            matrix[line][col] = null;
+        }
+    }
+})(hourglass);
+
+
+function getPoints() {
+    let points = null;
+
+    if (SIZE % 2 === 0) {
+        points = [
+            { x: 0, y: 0 }, 
+            { x: 0, y: SIZE - 1 }, 
+            { x: SIZE - 1, y: 0 }, 
+            { x: SIZE - 1, y: SIZE - 1 }, 
+            { x: SIZE / 2, y: SIZE / 2 }, 
+            { x: SIZE / 2 - 1, y: SIZE / 2 }, 
+            { x: SIZE / 2 - 1, y: SIZE / 2 - 1 }, 
+            { x: SIZE / 2, y: SIZE / 2 - 1 }, 
+        ];
+    } else {
+        points = [
+            { x: 0, y: 0 }, 
+            { x: 0, y: SIZE - 1 }, 
+            { x: SIZE - 1, y: 0 }, 
+            { x: SIZE - 1, y: SIZE - 1 }, 
+            { x: (SIZE - 1) / 2, y: (SIZE - 1) / 2 }, 
+        ];
+    }
+
+    return points;
+}
+
+function getChar(line, col) {
+    const points = getPoints();
+    const isPoint = points.some(point => point.x === line && point.y === col);
+    const isVerticalBar = col === 0 || col === SIZE - 1;
+    const isHorizontalBar = line === 0 || line === SIZE - 1;
+    const isReverseLimit = line === col;
+    const isLimit = line + col === SIZE - 1;
+    const isSand = line < col && line + col < SIZE - 1; 
+
+    let char = null;
+
+    if (isPoint) char = chars.point;
+    else if (isReverseLimit) char = chars.reverseLimit;
+    else if (isLimit) char = chars.limit;
+    else if (isVerticalBar) char = chars.verticalBar;
+    else if (isHorizontalBar) char = chars.horizontalBar;
+    else if (isSand) char = chars.sand;
+    else char = chars.empty;
+
+    return char;
+}
+
+function draw(matrix) {
+    console.log();
+
+    for (let line = 0; line < SIZE; line++) {
+        let output = "";
+
+        for (let col = 0; col < SIZE; col++) {
+            output += matrix[line][col];
+        }
+
+        console.log(output);
+    }
+}
+
+function init(matrix) {
+    for (let line = 0; line < SIZE; line++) {
+        for (let col = 0; col < SIZE; col++) {
+            matrix[line][col] = getChar(line, col);
+        }
+    }
+}
+
+async function ticktack(matrix) {
+    const capacity = SIZE % 2 === 0 ? (SIZE / 2) - 1 : (SIZE - 1) / 2;
+
+    for (let line = 0; line < capacity; line++) {
+        for (let col = 0; col < SIZE; col++) {
+            if (matrix[line][col] === chars.sand) {
+                draw(matrix);
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                matrix[SIZE - 1 - line][SIZE - 1 - col] = chars.sand;
+                matrix[line][col] = chars.empty;
+            }
+
+            console.clear()
+        }
+    }
+}
+
+init(hourglass);
+ticktack(hourglass);
+
