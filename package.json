@@ -1,0 +1,35 @@
+{
+  "name": "mobix-challenge",
+  "version": "1.0.0",
+  "description": "mobix's challenge",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "start:dev": "nodemon index.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thebe111/mobix.git"
+  },
+  "author": "thebe111",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thebe111/mobix/issues"
+  },
+  "homepage": "https://github.com/thebe111/mobix#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.18.1",
+    "mongodb": "^4.8.1"
+  },
+  "devDependencies": {
+    "jest": "^28.1.3",
+    "nodemon": "^2.0.19",
+    "supertest": "^6.2.4"
+  }
+}
